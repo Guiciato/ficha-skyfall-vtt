@@ -1,15 +1,16 @@
 <section id="tela-selecao" class="h-screen flex flex-col items-center justify-center p-10 relative overflow-hidden">
         
-        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale-[0.3] z-0">
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-80 z-0">
             <source src="fundo-animado.mp4" type="video/mp4">
         </video>
-        <div class="absolute inset-0 bg-gradient-to-b from-[#020617]/90 via-[#020617]/70 to-[#020617]/90 z-0"></div>
+        
+        <div class="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-[#020617]/40 to-[#020617]/80 z-0"></div>
 
         <div class="relative z-10 flex flex-col items-center w-full">
-            <h1 class="text-5xl font-serif font-black text-amber-500 mb-2 tracking-[0.2em] italic uppercase drop-shadow-2xl">Skyfall VTT</h1>
-            <p class="text-slate-500 text-[10px] mb-12 tracking-[0.5em] uppercase font-bold drop-shadow-md">Selecione seu Legado</p>
+            <h1 class="text-5xl font-serif font-black text-amber-500 mb-2 tracking-[0.2em] italic uppercase drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">Skyfall VTT</h1>
+            <p class="text-slate-300 text-[10px] mb-12 tracking-[0.5em] uppercase font-bold drop-shadow-md">Selecione seu Legado</p>
             
-            <div class="mb-8">
+            <div class="mb-8 flex items-center">
                 <label class="text-[10px] text-slate-300 uppercase font-bold tracking-widest drop-shadow-md">Sistema:</label>
                 <select id="select-sistema" class="bg-slate-900/80 backdrop-blur-sm border border-slate-700 text-xs p-2 rounded-lg text-white ml-2 outline-none focus:border-amber-500 shadow-lg">
                     <option value="skyfall">Skyfall RPG</option>
@@ -21,7 +22,7 @@
                 </div>
 
             <div class="mt-16">
-                <button onclick="mudarTela('tela-memorial')" class="text-[10px] bg-red-950/50 backdrop-blur-sm px-6 py-2 rounded-full border border-red-900/50 text-red-500 font-black uppercase tracking-widest hover:bg-red-900 hover:text-white transition-all shadow-lg">
+                <button onclick="mudarTela('tela-memorial')" class="text-[10px] bg-red-950/80 backdrop-blur-sm px-6 py-2 rounded-full border border-red-500/50 text-red-400 font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all shadow-lg">
                     🪦 Ver Memorial
                 </button>
             </div>
