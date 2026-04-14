@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Interativa - Skyfall VTT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos globais e customizações (ex: barra de rolagem customizada) */
+        body { background-color: #020617; color: #e2e8f0; }
+        .escondido { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen w-full font-sans overflow-x-hidden select-none">
+
+    <section id="tela-selecao" class="h-screen flex flex-col items-center justify-center p-10">
+        <h1 class="text-5xl font-serif font-black text-amber-500 mb-2 tracking-[0.2em] italic uppercase">Skyfall VTT</h1>
+        <p class="text-slate-500 text-[10px] mb-12 tracking-[0.5em] uppercase font-bold">Selecione seu Legado</p>
+        
+        <div class="mb-4">
+            <label class="text-[10px] text-slate-400 uppercase">Sistema:</label>
+            <select id="select-sistema" class="bg-slate-900 border border-slate-700 text-xs p-1 rounded text-white ml-2">
+                <option value="skyfall">Skyfall RPG</option>
+                <option value="tormenta">Tormenta20</option>
+            </select>
+        </div>
+
+        <div id="lista-fichas" class="flex flex-wrap justify-center gap-8 max-w-5xl">
+            <div onclick="abrirCriacao()" class="w-40 h-56 border-2 border-dashed border-slate-800 rounded-3xl flex flex-col items-center justify-center text-slate-700 hover:text-amber-500 hover:border-amber-500 cursor-pointer transition-all">
+                <span class="text-4xl mb-2">+</span>
+                <p class="text-[10px] font-black uppercase tracking-widest">Nova Ficha</p>
+            </div>
+        </div>
+
+        <div class="mt-16">
+            <button onclick="mudarTela('tela-memorial')" class="text-[10px] bg-red-950/30 px-6 py-2 rounded-full border border-red-900/50 text-red-500 font-black uppercase hover:bg-red-900 hover:text-white transition-all">
+                🪦 Ver Memorial
+            </button>
+        </div>
+    </section>
+
+    <section id="tela-criacao" class="escondido min-h-screen p-8">
+        <div class="max-w-4xl mx-auto bg-[#0f172a] p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+            <h2 id="titulo-form" class="text-2xl font-serif text-amber-500 mb-6">Nova Ficha</h2>
+            
+            <form id="form-ficha" class="space-y-4">
+                <input type="hidden" id="ficha-id">
+                <input type="text" id="ficha-nome" placeholder="Nome do Personagem" class="w-full bg-black/40 border border-slate-700 p-3 rounded text-white" required>
+                <input type="text" id="ficha-classe" placeholder="Classe / Legado" class="w-full bg-black/40 border border-slate-700 p-3 rounded text-white">
+                
+                <div id="container-atributos" class="grid grid-cols-2 gap-4">
+                    </div>
+
+                <textarea id="ficha-historia" placeholder="História / Traços" class="w-full bg-black/40 border border-slate-700 p-3 rounded text-white min-h-[100px]"></textarea>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 bg-amber-500 text-black font-black p-3 rounded uppercase">Salvar Ficha</button>
+                    <button type="button" onclick="mudarTela('tela-selecao')" class="flex-1 text-slate-400 p-3 rounded border border-slate-700 uppercase">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="tela-dashboard" class="escondido min-h-screen p-8 relative flex items-center justify-center">
+        <div class="absolute top-8 right-8 flex gap-4">
+            <button onclick="mudarTela('tela-selecao')" class="bg-black/60 px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white text-[9px] uppercase">Sair</button>
+            <button onclick="editarFichaAtiva()" class="bg-amber-500/20 px-6 py-2 rounded-full border border-amber-500/40 text-amber-500 text-[9px] uppercase">⚙️ Editar</button>
+        </div>
+        
+        <div id="dashboard-info" class="text-center z-10">
+            </div>
+    </section>
+
+    <section id="tela-memorial" class="escondido min-h-screen p-10 flex flex-col items-center">
+        <div class="w-full max-w-5xl">
+            <div class="flex justify-between items-center mb-12 border-b border-red-900/30 pb-6">
+                <h1 class="text-4xl font-serif font-black text-red-900 italic uppercase">Memorial de Ouroboros</h1>
+                <button onclick="mudarTela('tela-selecao')" class="bg-black border border-white/10 px-6 py-2 rounded-full text-[10px] text-slate-400 uppercase">Voltar</button>
+            </div>
+            <div id="lista-cemiterio" class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
