@@ -1,61 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skyfall VTT - Ficha Interativa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;700;900&display=swap');
-        
-        body { 
-            background-color: #020617; 
-            color: #e2e8f0; 
-            font-family: 'Inter', sans-serif;
-        }
-        .font-serif { font-family: 'Cinzel Decorative', serif; }
-        .escondido { display: none !important; }
-        
-        /* Glassmorphism Effect */
-        .glass {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Scrollbar Custom */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
-    </style>
-</head>
-<body class="min-h-screen w-full overflow-x-hidden select-none">
-
-    <video autoplay loop muted playsinline class="fixed inset-0 w-full h-full object-cover z-0 opacity-50">
-        <source src="fundo-animado.mp4" type="video/mp4">
-    </video>
-    <div class="fixed inset-0 bg-gradient-to-b from-[#020617]/90 via-transparent to-[#020617]/90 z-[1]"></div>
-
-    <section id="tela-selecao" class="relative z-10 h-screen flex flex-col items-center justify-center p-10">
-        <h1 class="text-6xl font-serif font-black text-amber-500 mb-2 tracking-[0.2em] italic uppercase drop-shadow-2xl">Skyfall VTT</h1>
-        <p class="text-slate-500 text-[10px] mb-12 tracking-[0.5em] uppercase font-bold">Selecione seu Legado</p>
-        
-        <div id="lista-fichas" class="flex flex-wrap justify-center gap-8 max-w-5xl">
-            </div>
-
-        <div class="mt-16">
-            <button onclick="mudarTela('tela-memorial')" class="text-[10px] bg-red-950/40 px-8 py-3 rounded-full border border-red-900/50 text-red-500 font-black uppercase tracking-widest hover:bg-red-900 transition-all glass">
-                🪦 Ver Memorial
-            </button>
-        </div>
-    </section>
-
-    <section id="tela-criacao" class="escondido relative z-10 min-h-screen p-6 flex items-center justify-center">
+<section id="tela-criacao" class="escondido relative z-10 min-h-screen p-6 flex items-center justify-center">
         <div class="w-full max-w-[1400px] grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             
             <div class="glass p-6 rounded-[2.5rem] space-y-4 shadow-2xl">
                 <h2 class="text-2xl font-serif font-black text-amber-500 uppercase italic border-b border-white/10 pb-2">Identidade</h2>
                 <div class="space-y-3">
+                    
+                    <input type="hidden" id="ficha-id">
+
                     <label class="text-[10px] font-black text-amber-500/70 uppercase block ml-2">Nome do Personagem</label>
                     <input type="text" id="ficha-nome" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all" placeholder="Ex: Herói de Água">
                     
@@ -79,12 +30,12 @@
                 <div class="space-y-2 max-h-[500px] overflow-y-auto pr-2" id="campos-dinamicos">
                     <div class="grid grid-cols-12 gap-2 items-center bg-black/20 p-2 rounded-xl border border-white/5">
                         <span class="col-span-4 text-[10px] font-black uppercase text-slate-400">Vida</span>
-                        <input type="number" id="attr-vida" class="col-span-2 bg-black/40 border border-white/10 rounded p-1 text-center text-xs" value="20">
+                        <input type="number" id="attr-vida" class="col-span-2 bg-black/40 border border-white/10 rounded p-1 text-center text-xs text-white" value="20">
                         <input type="number" class="col-span-2 bg-black/40 border border-white/10 rounded p-1 text-center text-xs text-slate-500" value="20">
-                        <select class="col-span-3 bg-slate-800 text-[9px] rounded p-1"><option>TOPO</option></select>
-                        <button class="col-span-1 text-red-500 text-xs">✕</button>
+                        <select class="col-span-3 bg-slate-800 text-[9px] text-white rounded p-1 outline-none"><option>TOPO</option></select>
+                        <button class="col-span-1 text-red-500 text-xs hover:text-white">✕</button>
                     </div>
-                    </div>
+                </div>
             </div>
 
             <div class="glass p-6 rounded-[2.5rem] shadow-2xl space-y-4">
@@ -107,15 +58,3 @@
 
         </div>
     </section>
-
-    <section id="tela-dashboard" class="escondido relative z-10 min-h-screen flex items-center justify-center p-8">
-        <div class="absolute top-8 right-8 flex gap-4">
-            <button onclick="mudarTela('tela-selecao')" class="glass px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:bg-white hover:text-black transition-all">Sair</button>
-            <button onclick="editarFichaAtiva()" class="bg-amber-500/20 border border-amber-500/40 px-6 py-2 rounded-full text-amber-500 text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-black transition-all">⚙️ Editar</button>
-        </div>
-        <div id="dashboard-info" class="text-center"></div>
-    </section>
-
-    <script src="app.js"></script>
-</body>
-</html>
