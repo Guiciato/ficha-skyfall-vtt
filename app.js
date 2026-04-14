@@ -1,125 +1,81 @@
 // --- ESTADO DA APLICAÇÃO ---
-let jogadores = JSON.parse(localStorage.getItem('fichas_v1')) || [];
-let cemiterio = JSON.parse(localStorage.getItem('memorial_v1')) || [];
+let jogadores = JSON.parse(localStorage.getItem('fichas_skyfall_v2')) || [];
+let cemiterio = JSON.parse(localStorage.getItem('memorial_skyfall_v2')) || [];
 let fichaAtivaId = null;
 
-// --- GERENCIAMENTO DE TELAS ---
-const telas = ['tela-selecao', 'tela-criacao', 'tela-dashboard', 'tela-memorial'];
-
+// --- NAVEGAÇÃO ---
 function mudarTela(telaId) {
-    telas.forEach(id => {
-        document.getElementById(id).classList.add('escondido');
-    });
+    const telas = ['tela-selecao', 'tela-criacao', 'tela-dashboard', 'tela-memorial'];
+    telas.forEach(id => document.getElementById(id).classList.add('escondido'));
     document.getElementById(telaId).classList.remove('escondido');
     
-    // Atualiza o conteúdo dependendo da tela acessada
     if (telaId === 'tela-selecao') renderizarSelecao();
     if (telaId === 'tela-memorial') renderizarMemorial();
     if (telaId === 'tela-dashboard') renderizarDashboard();
 }
 
-// --- 1. TELA DE SELEÇÃO ---
-function renderizarSelecao() {
-    const listaFichas = document.getElementById('lista-fichas');
+// --- SALVAR FICHA (Lógica para as 3 colunas) ---
+function salvarFichaComAtributos() {
+    const idExistente = document.getElementById('ficha-id').value;
     
-    // Mantém o botão de "Nova Ficha" e adiciona as fichas existentes
+    const novaFicha = {
+        id: idExistente ? parseInt(idExistente) : Date.now(),
+        nome: document.getElementById('ficha-nome').value || "Herói Sem Nome",
+        classe: document.getElementById('ficha-classe').value || "Plebeu",
+        imagem: document.getElementById('ficha-imagem').value || "",
+        // Dados da Coluna 2
+        atributos: {
+            vida: document.getElementById('attr-vida').value || 20,
+        },
+        // Dados da Coluna 3
+        textos: {
+            legado: document.getElementById('txt-legado').value,
+            heranca: document.getElementById('txt-heranca').value,
+            antecedente: document.getElementById('txt-antecedente').value
+        }
+    };
+
+    if (idExistente) {
+        const index = jogadores.findIndex(j => j.id === novaFicha.id);
+        jogadores[index] = novaFicha;
+    } else {
+        jogadores.push(novaFicha);
+    }
+
+    localStorage.setItem('fichas_skyfall_v2', JSON.stringify(jogadores));
+    mudarTela('tela-selecao');
+}
+
+// --- RENDERIZAR SELEÇÃO ---
+function renderizarSelecao() {
+    const container = document.getElementById('lista-fichas');
     let html = '';
+
     jogadores.forEach(j => {
         html += `
-        <div class="relative group w-40 h-56 bg-[#0f172a]/80 border border-white/5 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-amber-500 transition-all">
-            <div onclick="abrirDashboard(${j.id})" class="w-full h-full flex flex-col items-center justify-center">
-                <h3 class="font-black uppercase text-xs tracking-widest text-slate-300 group-hover:text-amber-500">${j.nome}</h3>
-                <p class="text-[8px] text-slate-500 uppercase mt-1">${j.classe}</p>
+            <div class="relative group w-48 h-64 glass rounded-[2rem] flex flex-col items-center justify-center cursor-pointer hover:border-amber-500 hover:-translate-y-2 transition-all shadow-2xl">
+                <div onclick="abrirDashboard(${j.id})" class="flex flex-col items-center p-4">
+                    <img src="${j.imagem || 'https://via.placeholder.com/150'}" class="w-20 h-20 rounded-full object-cover mb-3 border-2 border-amber-500/20 group-hover:border-amber-500 transition-all">
+                    <h3 class="font-serif font-black text-amber-500 text-xs uppercase text-center">${j.nome}</h3>
+                    <p class="text-[8px] text-slate-500 uppercase mt-1 tracking-widest">${j.classe}</p>
+                </div>
+                <div class="absolute -top-2 -right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                    <button onclick="matarFicha(${j.id})" class="bg-red-900 text-white p-2 rounded-full text-[10px] shadow-lg">💀</button>
+                </div>
             </div>
-            
-            <div class="absolute -top-3 -right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all z-50">
-                <button onclick="enviarParaMemorial(${j.id})" title="Enviar ao Memorial" class="bg-red-950 border border-red-500/50 text-red-500 p-2 rounded-full text-xs hover:bg-red-500 hover:text-white">💀</button>
-                <button onclick="excluirFicha(${j.id})" title="Excluir Definitivamente" class="bg-slate-900 border border-slate-600 text-slate-400 p-2 rounded-full text-xs hover:bg-white hover:text-black">🗑️</button>
-            </div>
-        </div>
         `;
     });
-    
-    // Anexa o botão de Nova Ficha ao final
+
     html += `
-        <div onclick="abrirCriacao()" class="w-40 h-56 border-2 border-dashed border-slate-800 rounded-3xl flex flex-col items-center justify-center text-slate-700 hover:text-amber-500 hover:border-amber-500 cursor-pointer transition-all">
+        <div onclick="abrirCriacao()" class="w-48 h-64 border-2 border-dashed border-white/10 rounded-[2rem] flex flex-col items-center justify-center text-slate-600 hover:text-amber-500 hover:border-amber-500 hover:bg-amber-500/5 transition-all cursor-pointer">
             <span class="text-4xl mb-2">+</span>
             <p class="text-[10px] font-black uppercase tracking-widest">Nova Ficha</p>
         </div>
     `;
-    
-    listaFichas.innerHTML = html;
+    container.innerHTML = html;
 }
 
-// Ações da Seleção
-function excluirFicha(id) {
-    if (confirm("Tem certeza que deseja excluir esta ficha permanentemente?")) {
-        jogadores = jogadores.filter(j => j.id !== id);
-        salvarDados();
-        renderizarSelecao();
-    }
-}
-
-function enviarParaMemorial(id) {
-    const ficha = jogadores.find(j => j.id === id);
-    if (ficha) {
-        cemiterio.push(ficha);
-        jogadores = jogadores.filter(j => j.id !== id);
-        salvarDados();
-        renderizarSelecao();
-    }
-}
-
-// --- 2. TELA DE CRIAÇÃO / EDIÇÃO ---
-function abrirCriacao(id = null) {
-    const form = document.getElementById('form-ficha');
-    const titulo = document.getElementById('titulo-form');
-    
-    form.reset();
-    document.getElementById('ficha-id').value = '';
-
-    if (id) {
-        titulo.innerText = "Editar Ficha";
-        const ficha = jogadores.find(j => j.id === id);
-        if (ficha) {
-            document.getElementById('ficha-id').value = ficha.id;
-            document.getElementById('ficha-nome').value = ficha.nome;
-            document.getElementById('ficha-classe').value = ficha.classe;
-            document.getElementById('ficha-historia').value = ficha.historia || '';
-        }
-    } else {
-        titulo.innerText = "Nova Ficha";
-        // Aqui você pode ler o select de sistema para gerar os inputs certos
-    }
-    
-    mudarTela('tela-criacao');
-}
-
-document.getElementById('form-ficha').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const idAbaixo = document.getElementById('ficha-id').value;
-    const novaFicha = {
-        id: idAbaixo ? parseInt(idAbaixo) : Date.now(),
-        nome: document.getElementById('ficha-nome').value,
-        classe: document.getElementById('ficha-classe').value,
-        historia: document.getElementById('ficha-historia').value
-    };
-
-    if (idAbaixo) {
-        // Editando
-        const index = jogadores.findIndex(j => j.id === novaFicha.id);
-        jogadores[index] = novaFicha;
-    } else {
-        // Criando
-        jogadores.push(novaFicha);
-    }
-
-    salvarDados();
-    mudarTela('tela-selecao');
-});
-
-// --- 3. DASHBOARD ---
+// --- DASHBOARD (Visualização Premium) ---
 function abrirDashboard(id) {
     fichaAtivaId = id;
     mudarTela('tela-dashboard');
@@ -127,68 +83,56 @@ function abrirDashboard(id) {
 
 function renderizarDashboard() {
     const ficha = jogadores.find(j => j.id === fichaAtivaId);
-    if (!ficha) return mudarTela('tela-selecao');
+    if (!ficha) return;
 
     document.getElementById('dashboard-info').innerHTML = `
-        <h1 class="text-6xl font-serif font-black text-amber-500 uppercase tracking-tighter italic">${ficha.nome}</h1>
-        <p class="text-amber-500/80 font-bold uppercase tracking-[0.4em] mt-2 text-[10px]">${ficha.classe}</p>
-        <p class="text-slate-400 mt-6 max-w-lg mx-auto">${ficha.historia}</p>
+        <div class="flex flex-col items-center">
+            <img src="${ficha.imagem || ''}" class="h-64 object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] mb-6">
+            <h1 class="text-7xl font-serif font-black text-amber-500 uppercase italic drop-shadow-2xl">${ficha.nome}</h1>
+            <p class="text-amber-500/80 font-bold uppercase tracking-[0.4em] text-xs mb-8">${ficha.classe}</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
+                <div class="glass p-6 rounded-3xl">
+                    <h4 class="text-[10px] text-pink-500 font-black uppercase mb-2">Vida</h4>
+                    <span class="text-4xl font-serif font-black">${ficha.atributos.vida}</span>
+                </div>
+                <div class="glass p-6 rounded-3xl col-span-2 text-left">
+                    <h4 class="text-[10px] text-purple-400 font-black uppercase mb-2">Legado</h4>
+                    <p class="text-sm text-slate-300 italic">${ficha.textos.legado || '...'}</p>
+                </div>
+            </div>
+        </div>
     `;
+}
+
+// --- EDIÇÃO ---
+function abrirCriacao(id = null) {
+    document.getElementById('ficha-id').value = id || '';
+    if (id) {
+        const f = jogadores.find(j => j.id === id);
+        document.getElementById('ficha-nome').value = f.nome;
+        document.getElementById('ficha-classe').value = f.classe;
+        document.getElementById('ficha-imagem').value = f.imagem;
+        document.getElementById('attr-vida').value = f.atributos.vida;
+        document.getElementById('txt-legado').value = f.textos.legado;
+        document.getElementById('txt-heranca').value = f.textos.heranca;
+        document.getElementById('txt-antecedente').value = f.textos.antecedente;
+    }
+    mudarTela('tela-criacao');
 }
 
 function editarFichaAtiva() {
     abrirCriacao(fichaAtivaId);
 }
 
-// --- 4. MEMORIAL ---
-function renderizarMemorial() {
-    const listaCemiterio = document.getElementById('lista-cemiterio');
-    
-    if (cemiterio.length === 0) {
-        listaCemiterio.innerHTML = '<p class="text-slate-500 col-span-full text-center">Nenhum herói tombado.</p>';
-        return;
-    }
-
-    let html = '';
-    cemiterio.forEach(h => {
-        html += `
-        <div class="bg-zinc-950 p-6 rounded-[2rem] border border-red-900/20 flex flex-col items-center group relative overflow-hidden">
-            <h3 class="font-black text-red-900 uppercase text-center text-sm mb-4">${h.nome}</h3>
-            
-            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all absolute bottom-4">
-                <button onclick="reviverFicha(${h.id})" class="bg-red-950 border border-red-900 text-[9px] font-black text-red-500 uppercase px-4 py-2 rounded hover:bg-red-900 hover:text-white">Reviver</button>
-                <button onclick="excluirDoMemorial(${h.id})" class="bg-slate-900 border border-slate-700 text-[9px] font-black text-slate-500 uppercase px-4 py-2 rounded hover:bg-white hover:text-black">Apagar</button>
-            </div>
-        </div>
-        `;
-    });
-    
-    listaCemiterio.innerHTML = html;
+function matarFicha(id) {
+    const f = jogadores.find(j => j.id === id);
+    cemiterio.push(f);
+    jogadores = jogadores.filter(j => j.id !== id);
+    localStorage.setItem('fichas_skyfall_v2', JSON.stringify(jogadores));
+    localStorage.setItem('memorial_skyfall_v2', JSON.stringify(cemiterio));
+    renderizarSelecao();
 }
 
-function reviverFicha(id) {
-    const ficha = cemiterio.find(h => h.id === id);
-    if (ficha) {
-        jogadores.push(ficha);
-        cemiterio = cemiterio.filter(h => h.id !== id);
-        salvarDados();
-        renderizarMemorial();
-    }
-}
-
-function excluirDoMemorial(id) {
-    if (confirm("Esta ação apagará a ficha para sempre. Confirmar?")) {
-        cemiterio = cemiterio.filter(h => h.id !== id);
-        salvarDados();
-        renderizarMemorial();
-    }
-}
-
-// --- UTILITÁRIOS ---
-function salvarDados() {
-    localStorage.setItem('fichas_v1', JSON.stringify(jogadores));
-    localStorage.setItem('memorial_v1', JSON.stringify(cemiterio));
-}
-
-// Iniciar a aplicação na tela de seleção
+// Início
 window.onload = () => renderizarSelecao();
