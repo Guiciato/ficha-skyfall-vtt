@@ -1,20 +1,77 @@
-<section id="tela-criacao" class="escondido relative z-10 min-h-screen p-6 flex items-center justify-center">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyfall VTT - Ficha Interativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;700;900&display=swap');
+        
+        body { 
+            background-color: #020617; 
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif;
+        }
+        .font-serif { font-family: 'Cinzel Decorative', serif; }
+        .escondido { display: none !important; }
+        
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar Custom */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden select-none">
+
+    <video autoplay loop muted playsinline class="fixed inset-0 w-full h-full object-cover z-0 opacity-60">
+        <source src="fundo-animado.mp4" type="video/mp4">
+    </video>
+    <div class="fixed inset-0 bg-gradient-to-b from-[#020617]/90 via-transparent to-[#020617]/90 z-[1]"></div>
+
+    <section id="tela-selecao" class="relative z-10 h-screen flex flex-col items-center justify-center p-10">
+        <h1 class="text-6xl font-serif font-black text-amber-500 mb-2 tracking-[0.2em] italic uppercase drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">Skyfall VTT</h1>
+        <p class="text-slate-400 text-[10px] mb-8 tracking-[0.5em] uppercase font-bold drop-shadow-md">Selecione seu Legado</p>
+        
+        <div class="mb-12 flex items-center glass px-4 py-2 rounded-xl">
+            <label class="text-[10px] text-slate-300 uppercase font-bold tracking-widest">Sistema:</label>
+            <select id="select-sistema" class="bg-transparent border-none text-xs text-amber-500 font-black ml-2 outline-none cursor-pointer">
+                <option value="skyfall">Skyfall RPG</option>
+                <option value="tormenta">Tormenta20</option>
+            </select>
+        </div>
+
+        <div id="lista-fichas" class="flex flex-wrap justify-center gap-8 max-w-5xl">
+            </div>
+
+        <div class="mt-16">
+            <button onclick="mudarTela('tela-memorial')" class="text-[10px] glass hover:bg-red-950/80 px-8 py-3 rounded-full border border-red-900/50 text-red-500 font-black uppercase tracking-widest transition-all shadow-lg">
+                🪦 Ver Memorial
+            </button>
+        </div>
+    </section>
+
+    <section id="tela-criacao" class="escondido relative z-10 min-h-screen p-6 flex items-center justify-center">
         <div class="w-full max-w-[1400px] grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             
             <div class="glass p-6 rounded-[2.5rem] space-y-4 shadow-2xl">
                 <h2 class="text-2xl font-serif font-black text-amber-500 uppercase italic border-b border-white/10 pb-2">Identidade</h2>
                 <div class="space-y-3">
-                    
-                    <input type="hidden" id="ficha-id">
-
-                    <label class="text-[10px] font-black text-amber-500/70 uppercase block ml-2">Nome do Personagem</label>
-                    <input type="text" id="ficha-nome" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all" placeholder="Ex: Herói de Água">
+                    <input type="hidden" id="ficha-id"> <label class="text-[10px] font-black text-amber-500/70 uppercase block ml-2">Nome do Personagem</label>
+                    <input type="text" id="ficha-nome" class="w-full bg-black/60 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all">
                     
                     <label class="text-[10px] font-black text-amber-500/70 uppercase block ml-2">Classe / Legado</label>
-                    <input type="text" id="ficha-classe" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all" placeholder="Ex: Guerreiro">
+                    <input type="text" id="ficha-classe" class="w-full bg-black/60 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all">
                     
                     <label class="text-[10px] font-black text-amber-500/70 uppercase block ml-2">URL da Imagem</label>
-                    <input type="text" id="ficha-imagem" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all" placeholder="https://...">
+                    <input type="text" id="ficha-imagem" class="w-full bg-black/60 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-amber-500 transition-all">
                 </div>
                 <div class="pt-6 space-y-3">
                     <button onclick="salvarFichaComAtributos()" class="w-full bg-amber-500 text-black font-black p-4 rounded-2xl uppercase tracking-widest hover:bg-amber-400 shadow-lg transition-all">Salvar Ficha</button>
@@ -25,15 +82,19 @@
             <div class="glass p-6 rounded-[2.5rem] shadow-2xl">
                 <div class="flex justify-between items-center border-b border-white/10 pb-2 mb-4">
                     <h2 class="text-2xl font-serif font-black text-pink-500 uppercase italic">Layout & Dados</h2>
-                    <button class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-3 py-1 rounded-lg text-[10px] font-black uppercase">+ Novo</button>
                 </div>
-                <div class="space-y-2 max-h-[500px] overflow-y-auto pr-2" id="campos-dinamicos">
-                    <div class="grid grid-cols-12 gap-2 items-center bg-black/20 p-2 rounded-xl border border-white/5">
-                        <span class="col-span-4 text-[10px] font-black uppercase text-slate-400">Vida</span>
-                        <input type="number" id="attr-vida" class="col-span-2 bg-black/40 border border-white/10 rounded p-1 text-center text-xs text-white" value="20">
-                        <input type="number" class="col-span-2 bg-black/40 border border-white/10 rounded p-1 text-center text-xs text-slate-500" value="20">
-                        <select class="col-span-3 bg-slate-800 text-[9px] text-white rounded p-1 outline-none"><option>TOPO</option></select>
-                        <button class="col-span-1 text-red-500 text-xs hover:text-white">✕</button>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/5">
+                        <span class="text-[10px] font-black uppercase text-pink-400 tracking-widest">Vida (HP)</span>
+                        <input type="number" id="attr-vida" class="w-20 bg-black/60 border border-white/10 rounded-lg p-2 text-center text-white font-serif font-black focus:border-pink-500 outline-none" value="20">
+                    </div>
+                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/5">
+                        <span class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Força (FOR)</span>
+                        <input type="number" id="attr-for" class="w-20 bg-black/60 border border-white/10 rounded-lg p-2 text-center text-white font-serif font-black focus:border-amber-500 outline-none" value="0">
+                    </div>
+                     <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/5">
+                        <span class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Destreza (DES)</span>
+                        <input type="number" id="attr-des" class="w-20 bg-black/60 border border-white/10 rounded-lg p-2 text-center text-white font-serif font-black focus:border-amber-500 outline-none" value="0">
                     </div>
                 </div>
             </div>
@@ -42,19 +103,36 @@
                 <h2 class="text-2xl font-serif font-black text-purple-500 uppercase italic border-b border-white/10 pb-2">Traços & Textos</h2>
                 <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                     <div>
-                        <label class="text-[10px] font-black text-purple-400 uppercase block mb-1">Legado</label>
-                        <textarea id="txt-legado" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs text-slate-300 min-h-[80px] outline-none focus:border-purple-500 resize-none"></textarea>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-purple-400 uppercase block mb-1">Herança</label>
-                        <textarea id="txt-heranca" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs text-slate-300 min-h-[80px] outline-none focus:border-purple-500 resize-none"></textarea>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-purple-400 uppercase block mb-1">Antecedente</label>
-                        <textarea id="txt-antecedente" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-xs text-slate-300 min-h-[80px] outline-none focus:border-purple-500 resize-none"></textarea>
+                        <label class="text-[10px] font-black text-purple-400 uppercase block mb-1">História / Legado</label>
+                        <textarea id="txt-legado" class="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-sm text-slate-300 min-h-[120px] outline-none focus:border-purple-500 resize-none"></textarea>
                     </div>
                 </div>
             </div>
 
         </div>
     </section>
+
+    <section id="tela-dashboard" class="escondido relative z-10 min-h-screen flex flex-col items-center justify-center p-8">
+        <div class="absolute top-8 right-8 flex gap-4 z-50">
+            <button onclick="mudarTela('tela-selecao')" class="glass px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:bg-white hover:text-black transition-all">Voltar</button>
+            <button onclick="editarFichaAtiva()" class="bg-amber-500/20 border border-amber-500/40 px-6 py-2 rounded-full text-amber-500 text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-black transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)]">⚙️ Editar</button>
+        </div>
+        
+        <div id="dashboard-info" class="text-center w-full max-w-5xl">
+            </div>
+    </section>
+
+    <section id="tela-memorial" class="escondido relative z-10 min-h-screen p-10 flex flex-col items-center">
+        <div class="w-full max-w-5xl">
+            <div class="flex justify-between items-center mb-12 border-b border-red-900/30 pb-6 glass px-8 rounded-3xl">
+                <h1 class="text-4xl font-serif font-black text-red-500 italic uppercase drop-shadow-md">Memorial de Ouroboros</h1>
+                <button onclick="mudarTela('tela-selecao')" class="bg-black/50 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black tracking-widest text-slate-400 uppercase hover:bg-white hover:text-black transition-all">Voltar</button>
+            </div>
+            <div id="lista-cemiterio" class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
